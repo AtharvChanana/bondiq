@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String         @id
+  email         String         @unique
+  name          String?
+  avatar        String?
+  createdAt     DateTime       @default(now())
+  people        Person[]
+  interactions  Interaction[]
+  nudges        Nudge[]
+  weeklyDigests WeeklyDigest[]
+  goals         Goal[]
+  chatMessages  ChatMessage[]
+}
+
+model Person {
+  id                String        @id @default(cuid())
+  userId            String
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name              String
+  avatar            String?
+  relationship      String
+  location          String?
+  tags              String?
+  howWeMet          String?
+  currentSituation  String?
+  whatMattersToThem String?
+  phone             String?
+  birthday          String?
+  knownSince        String?
+  healthScore       Int           @default(100)
+  lastContactedAt   DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  interactions      Interaction[]
+  memories          Memory[]
+  milestones        Milestone[]
+  nudges            Nudge[]
+  followUps         FollowUp[]
+  goals             Goal[]
+
+  @@index([userId])
+  @@index([relationship])
+}
+
+model Interaction {
+  id               String    @id @default(cuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personId         String
+  person           Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
+  type             String
+  rawContent       String
+  summary          String?
+  sentiment        String?
+  extractionStatus String    @default("pending")
+  extractionError  String?
+  createdAt        DateTime  @default(now())
+  memories         Memory[]
+  followUps        FollowUp[]
+
+  @@index([userId])
+  @@index([personId])
+}
+
+model Memory {
+  id            String       @id @default(cuid())
+  personId      String
+  person        Person       @relation(fields: [personId], references: [id], onDelete: Cascade)
+  interactionId String?
+  interaction   Interaction? @relation(fields: [interactionId], references: [id], onDelete: SetNull)
+  category      String
+  content       String
+  importance    String       @default("medium")
+  createdAt     DateTime     @default(now())
+
+  @@index([personId])
+}
+
+model Milestone {
+  id          String    @id @default(cuid())
+  personId    String
+  person      Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
+  title       String
+  date        DateTime?
+  isRecurring Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  @@index([personId])
+  @@index([date])
+}
+
+model FollowUp {
+  id            String       @id @default(cuid())
+  personId      String
+  person        Person       @relation(fields: [personId], references: [id], onDelete: Cascade)
+  interactionId String?
+  interaction   Interaction? @relation(fields: [interactionId], references: [id], onDelete: SetNull)
+  content       String
+  status        String       @default("open")
+  createdAt     DateTime     @default(now())
+  completedAt   DateTime?
+
+  @@index([personId])
+  @@index([status])
+}
+
+model Nudge {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personId     String
+  person       Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
+  reason       String
+  draftMessage String?
+  status       String    @default("pending")
+  nudgeKey     String?
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@index([personId])
+  @@index([status])
+  @@unique([personId, nudgeKey])
+}
+
+model WeeklyDigest {
+  id                  String   @id @default(cuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekStart           DateTime
+  weekEnd             DateTime
+  invested            Json
+  fading              Json
+  upcoming            Json
+  mostActive          Json?
+  recommendation      String
+  recommendationReason String
+  createdAt           DateTime @default(now())
+
+  @@index([userId])
+  @@unique([userId, weekStart])
+}
+
+// ─── NEW MODELS ────────────────────────────────────────────────
+
+model Goal {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personId        String
+  person          Person   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  title           String
+  frequencyDays   Int      // target: contact every N days
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([personId])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   // "user" | "assistant"
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+

@@ -1,27 +1,209 @@
+/* ============================================================
+   DISRUPTOR — Neo-Brutalist Design System for BondIQ
+   Colors: #000000 black | #FFFFFF white | #CCFF00 volt (accent only)
+   Fonts: Barlow_Condensed (headlines) | Space Mono (labels) | Plus Jakarta Sans (body)
+   ============================================================ */
+
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .animate-marquee {
+    animation: marquee 25s linear infinite;
   }
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+/* ============================================================
+   CSS VARIABLES — Single Theme (No Dark Mode Toggle)
+   ============================================================ */
+@layer base {
+  :root {
+    --background: #000000;
+    --foreground: #FFFFFF;
+    --card: #111111;
+    --card-foreground: #FFFFFF;
+    --popover: #111111;
+    --popover-foreground: #FFFFFF;
+    --primary: #FFFFFF;
+    --primary-foreground: #000000;
+    --secondary: #1A1A1A;
+    --secondary-foreground: #FFFFFF;
+    --muted: #1A1A1A;
+    --muted-foreground: #777777;
+    --accent: #CCFF00;
+    --accent-foreground: #000000;
+    --destructive: #FF3B3B;
+    --destructive-foreground: #FFFFFF;
+    --border: #FFFFFF;
+    --input: #FFFFFF;
+    --ring: #FFFFFF;
+    --radius: 0px;
+
+    /* Design tokens */
+    --volt: #CCFF00;
+    --neo-shadow: 8px 8px 0px #FFFFFF;
+    --neo-shadow-black: 8px 8px 0px #000000;
+    --neo-shadow-volt: 8px 8px 0px #CCFF00;
+    --border-width: 4px;
+  }
+
+  .dark {
+    --background: #000000;
+    --foreground: #FFFFFF;
+    --card: #111111;
+    --card-foreground: #FFFFFF;
+    --popover: #111111;
+    --popover-foreground: #FFFFFF;
+    --primary: #FFFFFF;
+    --primary-foreground: #000000;
+    --secondary: #1A1A1A;
+    --secondary-foreground: #FFFFFF;
+    --muted: #1A1A1A;
+    --muted-foreground: #777777;
+    --accent: #CCFF00;
+    --accent-foreground: #000000;
+    --destructive: #FF3B3B;
+    --destructive-foreground: #FFFFFF;
+    --border: #FFFFFF;
+    --input: #FFFFFF;
+    --ring: #FFFFFF;
+  }
+}
+
+/* ============================================================
+   BASE RESETS
+   ============================================================ */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-jakarta, 'Plus Jakarta Sans', sans-serif);
+  }
+}
+
+/* ============================================================
+   BRUTALIST UTILITY CLASSES
+   ============================================================ */
+@layer utilities {
+  /* Neo-brutalist card */
+  .brut-card {
+    background: #111111;
+    border: 4px solid #FFFFFF;
+    box-shadow: 8px 8px 0px #FFFFFF;
+  }
+  .brut-card-volt {
+    background: #1A1A1A;
+    border: 4px solid #CCFF00;
+    box-shadow: 8px 8px 0px #FFFFFF;
+  }
+  .brut-card-dark {
+    background: #111111;
+    border: 4px solid #333333;
+  }
+
+  /* Neo-brutalist button */
+  .brut-btn {
+    font-family: var(--font-space-mono, 'Space Mono', monospace);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 4px solid #000000;
+    box-shadow: 8px 8px 0px #000000;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .brut-btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 4px 4px 0px #000000;
+  }
+  .brut-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px #000000;
+  }
+  .brut-btn-volt {
+    background: #CCFF00;
+    color: #000000;
+  }
+  .brut-btn-white {
+    background: #FFFFFF;
+    color: #000000;
+  }
+  .brut-btn-dark {
+    background: #000000;
+    color: #FFFFFF;
+    border-color: #FFFFFF;
+    box-shadow: 8px 8px 0px #FFFFFF;
+  }
+  .brut-btn-dark:hover {
+    box-shadow: 4px 4px 0px #FFFFFF;
+  }
+  .brut-btn-dark:active {
+    box-shadow: 0px 0px 0px #FFFFFF;
+  }
+
+  /* Headline font */
+  .font-headline {
+    font-family: var(--font-headline, 'Barlow Condensed', sans-serif);
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 0.95;
+  }
+
+  /* Mono labels */
+  .font-mono-label {
+    font-family: var(--font-space-mono, 'Space Mono', monospace);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* Neo shadow */
+  .neo-shadow {
+    box-shadow: 8px 8px 0px #FFFFFF;
+  }
+  .neo-shadow-black {
+    box-shadow: 8px 8px 0px #000000;
+  }
+  .neo-shadow-volt {
+    box-shadow: 8px 8px 0px #CCFF00;
+  }
+
+  /* Volt accent */
+  .text-volt {
+    color: #CCFF00;
+  }
+  .bg-volt {
+    background: #CCFF00;
+  }
+  .border-volt {
+    border-color: #CCFF00;
+  }
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: #333333;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555555;
 }
