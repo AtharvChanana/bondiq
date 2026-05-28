@@ -74,7 +74,7 @@ export default async function AdminPage() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user: any) => (
+              {users.map((user) => (
                 <tr key={user.id} className="border-b-2 border-gray-200 last:border-0 hover:bg-[#CCFF00] transition-colors duration-0">
                   <td className="p-3 border-r-2 border-black truncate max-w-[200px]">{user.email}</td>
                   <td className="p-3 border-r-2 border-black truncate max-w-[150px]">{user.name ?? "-"}</td>
@@ -108,7 +108,7 @@ export default async function AdminPage() {
               </tr>
             </thead>
             <tbody>
-              {recentVisits.map((visit: any) => (
+              {recentVisits.map((visit) => (
                 <tr key={visit.id} className="border-b-2 border-gray-200 last:border-0 hover:bg-black hover:text-[#CCFF00] transition-colors duration-0">
                   <td className="p-3 border-r-2 border-inherit whitespace-nowrap">{format(new Date(visit.createdAt), "MMM d, HH:mm")}</td>
                   <td className="p-3 border-r-2 border-inherit font-bold truncate max-w-[200px]">{visit.path}</td>
