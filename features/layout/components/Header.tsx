@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Plus, Bell, Heart } from "lucide-react"
+import { Plus, Bell, Heart, BarChart2 } from "lucide-react"
 
 import { mainNavItems, settingsNavItem } from "@/features/layout/components/nav-items"
 import { NotificationCenter } from "@/features/layout/components/NotificationCenter"
@@ -24,6 +24,21 @@ export function Header() {
         >
           BONDIQ
         </span>
+      </Link>
+
+      {/* Weekly Report — visible on all sizes, between logo and right actions */}
+      <Link
+        href="/weekly-report"
+        className="font-bold text-[11px] uppercase tracking-wider no-underline inline-flex items-center gap-1.5 px-3 py-1.5 border-2 border-black"
+        style={{
+          fontFamily: "var(--font-space-mono, 'Space Mono', monospace)",
+          background: '#CCFF00',
+          color: '#000000',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        <BarChart2 size={12} />
+        <span>WEEKLY REPORT</span>
       </Link>
 
       {/* Desktop Nav - Hidden on mobile */}
