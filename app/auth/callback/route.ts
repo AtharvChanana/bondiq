@@ -18,9 +18,9 @@ export async function GET(req: Request) {
       const existingUser = await prisma.user.findUnique({ where: { id: data.user.id } })
       
       if (!existingUser) {
-        // Fire and forget the welcome email
+        // Await the email so Vercel serverless doesn't kill the process prematurely
         const userName = data.user.user_metadata?.name ?? data.user.user_metadata?.full_name ?? "there"
-        EmailService.sendWelcomeEmail(data.user.email, userName).catch(console.error)
+        await EmailService.sendWelcomeEmail(data.user.email, userName)
       }
     }
   }
