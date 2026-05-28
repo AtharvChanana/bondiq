@@ -1,22 +1,14 @@
 "use client"
 
-import { useEffect, useState } from "react"
-
+import { useQuery } from "@tanstack/react-query"
 import { InteractionsClientService } from "@/features/interactions/services/interactions.service"
-import type {
-  CreateInteractionInput,
-  InteractionPerson,
-} from "@/features/interactions/types"
+import type { CreateInteractionInput } from "@/features/interactions/types"
 
 export function useInteractions() {
-  const [people, setPeople] = useState<InteractionPerson[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    InteractionsClientService.getPeople()
-      .then(setPeople)
-      .finally(() => setLoading(false))
-  }, [])
+  const { data: people = [], isLoading: loading } = useQuery({
+    queryKey: ["interaction-people"],
+    queryFn: () => InteractionsClientService.getPeople(),
+  })
 
   async function logInteraction(data: CreateInteractionInput) {
     return InteractionsClientService.create(data)
@@ -24,3 +16,4 @@ export function useInteractions() {
 
   return { people, loading, logInteraction }
 }
+

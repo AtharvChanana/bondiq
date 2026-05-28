@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
-
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import type { MilestoneDTO, NudgeDTO, PersonSummary } from "@/shared/types"
 
 interface DashboardData {
@@ -18,21 +17,19 @@ interface DashboardData {
   healthOverview: { healthy: number; atRisk: number; fading: number }
 }
 
-export function useDashboard() {
-  const [data, setData] = useState<DashboardData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+async function fetchDashboard(): Promise<DashboardData> {
+  const res = await fetch("/api/dashboard")
+  if (!res.ok) throw new Error("Failed to load dashboard")
+  return res.json()
+}
 
-  useEffect(() => {
-    fetch("/api/dashboard")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to load dashboard")
-        return res.json()
-      })
-      .then(setData)
-      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load dashboard"))
-      .finally(() => setLoading(false))
-  }, [])
+export function useDashboard() {
+  const queryClient = useQueryClient()
+
+  const { data, isLoading: loading, error } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: fetchDashboard,
+  })
 
   async function updateNudge(id: string, status: "seen" | "acted" | "dismissed") {
     const res = await fetch(`/api/nudges/${id}`, {
@@ -41,15 +38,19 @@ export function useDashboard() {
       body: JSON.stringify({ status }),
     })
     if (!res.ok) throw new Error("Failed to update nudge")
-    setData((current) =>
+    // Optimistically remove the nudge from the cache
+    queryClient.setQueryData<DashboardData>(["dashboard"], (current) =>
       current
-        ? {
-            ...current,
-            nudges: current.nudges.filter((nudge) => nudge.id !== id),
-          }
+        ? { ...current, nudges: current.nudges.filter((n) => n.id !== id) }
         : current
     )
   }
 
-  return { data, loading, error, updateNudge }
+  return {
+    data: data ?? null,
+    loading,
+    error: error ? (error instanceof Error ? error.message : "Failed to load") : null,
+    updateNudge,
+  }
 }
+

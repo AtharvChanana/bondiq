@@ -1,24 +1,24 @@
 "use client"
 
-import { useEffect, useState } from "react"
-
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { NudgesClientService } from "@/features/nudges/services/nudges.service"
 import type { Nudge } from "@/features/nudges/types"
 
 export function useNudges() {
-  const [nudges, setNudges] = useState<Nudge[]>([])
-  const [loading, setLoading] = useState(true)
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    NudgesClientService.getPending()
-      .then(setNudges)
-      .finally(() => setLoading(false))
-  }, [])
+  const { data: nudges = [], isLoading: loading } = useQuery({
+    queryKey: ["nudges"],
+    queryFn: () => NudgesClientService.getPending(),
+  })
 
   async function update(id: string, status: "seen" | "acted" | "dismissed") {
     await NudgesClientService.update(id, status)
-    setNudges((current) => current.filter((nudge) => nudge.id !== id))
+    queryClient.setQueryData<Nudge[]>(["nudges"], (current = []) =>
+      current.filter((nudge) => nudge.id !== id)
+    )
   }
 
   return { nudges, loading, update }
 }
+
