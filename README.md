@@ -31,3 +31,5 @@ The app follows feature-based boundaries:
 - `server/` contains backend services, repositories, jobs, auth, Prisma, and Gemini code.
 
 API handlers authenticate, validate with Zod, and delegate to `server/services`.
+
+<!-- Trigger Vercel Deploy -->
