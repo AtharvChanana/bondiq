@@ -46,13 +46,13 @@ export default async function AdminPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-6 border-4 border-black flex flex-col items-center justify-center py-12">
           <span className="font-mono text-sm text-gray-500 uppercase font-bold tracking-widest mb-2">Total Users</span>
-          <span className="text-6xl font-black tracking-tighter" style={{ fontFamily: "var(--font-jakarta)" }}>
+          <span className="text-6xl text-black font-black tracking-tighter" style={{ fontFamily: "var(--font-jakarta)" }}>
             {users.length}
           </span>
         </div>
         <div className="bg-white p-6 border-4 border-black flex flex-col items-center justify-center py-12">
           <span className="font-mono text-sm text-gray-500 uppercase font-bold tracking-widest mb-2">Total Visits</span>
-          <span className="text-6xl font-black tracking-tighter" style={{ fontFamily: "var(--font-jakarta)" }}>
+          <span className="text-6xl text-black font-black tracking-tighter" style={{ fontFamily: "var(--font-jakarta)" }}>
             {visitsCount}
           </span>
         </div>
@@ -65,7 +65,7 @@ export default async function AdminPage() {
         <div className="bg-white border-4 border-black overflow-x-auto hide-scrollbar">
           <table className="w-full text-left font-mono text-sm border-collapse whitespace-nowrap">
             <thead>
-              <tr className="bg-gray-100 border-b-4 border-black">
+              <tr className="bg-gray-100 border-b-4 border-black text-black">
                 <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Email</th>
                 <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Name</th>
                 <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Joined</th>
@@ -73,7 +73,7 @@ export default async function AdminPage() {
                 <th className="p-3 uppercase tracking-wider font-bold">Interactions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-black">
               {users.map((user) => (
                 <tr key={user.id} className="border-b-2 border-gray-200 last:border-0 hover:bg-[#CCFF00] transition-colors duration-0">
                   <td className="p-3 border-r-2 border-black truncate max-w-[200px]">{user.email}</td>
@@ -100,14 +100,14 @@ export default async function AdminPage() {
         <div className="bg-white border-4 border-black overflow-x-auto hide-scrollbar">
           <table className="w-full text-left font-mono text-xs border-collapse whitespace-nowrap">
             <thead>
-              <tr className="bg-gray-100 border-b-4 border-black">
+              <tr className="bg-gray-100 border-b-4 border-black text-black">
                 <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Time</th>
                 <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Path</th>
                 <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">IP Address</th>
                 <th className="p-3 uppercase tracking-wider font-bold">Device / Browser</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-black">
               {recentVisits.map((visit) => (
                 <tr key={visit.id} className="border-b-2 border-gray-200 last:border-0 hover:bg-black hover:text-[#CCFF00] transition-colors duration-0">
                   <td className="p-3 border-r-2 border-inherit whitespace-nowrap">{format(new Date(visit.createdAt), "MMM d, HH:mm")}</td>

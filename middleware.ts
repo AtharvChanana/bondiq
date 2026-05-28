@@ -37,6 +37,7 @@ export async function middleware(request: NextRequest) {
 
     if (isAuthPage && isLoggedIn) {
       const url = request.nextUrl.clone()
+      // We can't check email securely here without Supabase env, so default to dashboard.
       url.pathname = "/dashboard"
       return NextResponse.redirect(url)
     }
@@ -96,7 +97,7 @@ export async function middleware(request: NextRequest) {
 
   if (isAuthPage && user) {
     const url = request.nextUrl.clone()
-    url.pathname = "/dashboard"
+    url.pathname = user.email === "bondiq.admin@gmail.com" ? "/admin" : "/dashboard"
     return NextResponse.redirect(url)
   }
 
