@@ -26,10 +26,10 @@ export function Header() {
         </span>
       </Link>
 
-      {/* Weekly Report — visible on all sizes, between logo and right actions */}
+      {/* Weekly Report — mobile only (desktop nav already has it) */}
       <Link
         href="/weekly-report"
-        className="font-bold text-[11px] uppercase tracking-wider no-underline inline-flex items-center gap-1.5 px-3 py-1.5 border-2 border-black"
+        className="md:hidden font-bold text-[11px] uppercase tracking-wider no-underline inline-flex items-center gap-1.5 px-3 py-1.5 border-2 border-black"
         style={{
           fontFamily: "var(--font-space-mono, 'Space Mono', monospace)",
           background: '#CCFF00',
