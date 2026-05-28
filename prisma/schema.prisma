@@ -178,3 +178,13 @@ model ChatMessage {
   @@index([userId])
 }
 
+model SiteVisit {
+  id        String   @id @default(cuid())
+  ip        String?
+  userAgent String?
+  path      String
+  userId    String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

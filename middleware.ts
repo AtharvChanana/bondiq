@@ -12,6 +12,19 @@ export async function middleware(request: NextRequest) {
   if (!hasSupabaseEnv) {
     const isLoggedIn = request.cookies.get("bondiq_logged_in")?.value === "true"
     const path = request.nextUrl.pathname
+
+    // Log analytics in the background
+    if (!path.startsWith("/api") && !path.startsWith("/_next") && !path.match(/\.(.*)$/)) {
+      const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "Unknown"
+      const userAgent = request.headers.get("user-agent") ?? "Unknown"
+      const baseUrl = request.nextUrl.origin
+      fetch(`${baseUrl}/api/analytics/track`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path, ip, userAgent, userId: null }),
+      }).catch(console.error)
+    }
+
     const isProtected = protectedPrefixes.some((prefix) => path === prefix || path.startsWith(prefix + "/"))
     const isAuthPage = authPrefixes.some((prefix) => path === prefix || path.startsWith(prefix + "/"))
 
@@ -58,6 +71,19 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const path = request.nextUrl.pathname
+
+  // Log analytics in the background
+  if (!path.startsWith("/api") && !path.startsWith("/_next") && !path.match(/\.(.*)$/)) {
+    const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "Unknown"
+    const userAgent = request.headers.get("user-agent") ?? "Unknown"
+    const baseUrl = request.nextUrl.origin
+    fetch(`${baseUrl}/api/analytics/track`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path, ip, userAgent, userId: user?.id ?? null }),
+    }).catch(console.error)
+  }
+
   const isProtected = protectedPrefixes.some((prefix) => path === prefix || path.startsWith(prefix + "/"))
   const isAuthPage = authPrefixes.some((prefix) => path === prefix || path.startsWith(prefix + "/"))
 
