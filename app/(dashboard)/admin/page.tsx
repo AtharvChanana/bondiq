@@ -13,7 +13,7 @@ export default async function AdminPage() {
     return redirect("/dashboard")
   }
 
-  const [users, visitsCount, recentVisits] = await Promise.all([
+  const [users, visitsCount] = await Promise.all([
     prisma.user.findMany({
       orderBy: { createdAt: "desc" },
       include: {
@@ -23,11 +23,31 @@ export default async function AdminPage() {
       },
     }),
     prisma.siteVisit.count(),
-    prisma.siteVisit.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 100,
-    }),
   ])
+
+  const rawVisits = await prisma.siteVisit.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 5000,
+  })
+
+  // Group visits by IP and UserAgent
+  const groupedVisits = Object.values(
+    rawVisits.reduce((acc, visit) => {
+      const key = `${visit.ip}-${visit.userAgent}`
+      if (!acc[key]) {
+        acc[key] = {
+          id: visit.id,
+          ip: visit.ip,
+          userAgent: visit.userAgent,
+          createdAt: visit.createdAt,
+          count: 1,
+        }
+      } else {
+        acc[key].count++
+      }
+      return acc
+    }, {} as Record<string, any>)
+  ).slice(0, 100) // only show top 100 unique visitors
 
   return (
     <div className="flex flex-col gap-8 pb-16">
@@ -95,30 +115,38 @@ export default async function AdminPage() {
 
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-black uppercase tracking-widest text-white bg-black p-3 inline-block self-start border-2 border-black" style={{ fontFamily: "var(--font-jakarta)" }}>
-          Recent Traffic (Last 100)
+          Unique Visitors (Grouped by IP)
         </h2>
         <div className="bg-white border-4 border-black overflow-x-auto hide-scrollbar">
           <table className="w-full text-left font-mono text-xs border-collapse whitespace-nowrap">
             <thead>
               <tr className="bg-gray-100 border-b-4 border-black text-black">
-                <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Time</th>
-                <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Path</th>
+                <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Last Visit (IST)</th>
                 <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">IP Address</th>
-                <th className="p-3 uppercase tracking-wider font-bold">Device / Browser</th>
+                <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Device / Browser</th>
+                <th className="p-3 uppercase tracking-wider font-bold">Visits</th>
               </tr>
             </thead>
             <tbody className="text-black">
-              {recentVisits.map((visit) => (
+              {groupedVisits.map((visit) => (
                 <tr key={visit.id} className="border-b-2 border-gray-200 last:border-0 hover:bg-black hover:text-[#CCFF00] transition-colors duration-0">
-                  <td className="p-3 border-r-2 border-inherit whitespace-nowrap">{format(new Date(visit.createdAt), "MMM d, HH:mm")}</td>
-                  <td className="p-3 border-r-2 border-inherit font-bold truncate max-w-[200px]">{visit.path}</td>
+                  <td className="p-3 border-r-2 border-inherit whitespace-nowrap">
+                    {new Intl.DateTimeFormat("en-IN", {
+                      timeZone: "Asia/Kolkata",
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }).format(new Date(visit.createdAt))}
+                  </td>
                   <td className="p-3 border-r-2 border-inherit font-bold">{visit.ip}</td>
-                  <td className="p-3 truncate max-w-[300px]" title={visit.userAgent ?? ""}>
+                  <td className="p-3 border-r-2 border-inherit truncate max-w-[300px]" title={visit.userAgent ?? ""}>
                     {visit.userAgent ?? "Unknown"}
                   </td>
+                  <td className="p-3 font-bold">{visit.count}</td>
                 </tr>
               ))}
-              {recentVisits.length === 0 && (
+              {groupedVisits.length === 0 && (
                 <tr>
                   <td colSpan={4} className="p-6 text-center text-gray-500 font-bold uppercase">No visits recorded yet</td>
                 </tr>
