@@ -2,10 +2,11 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Plus, Bell, Heart, BarChart2 } from "lucide-react"
+import { Plus, BarChart2 } from "lucide-react"
 
 import { mainNavItems, settingsNavItem } from "@/features/layout/components/nav-items"
 import { NotificationCenter } from "@/features/layout/components/NotificationCenter"
+import { BondiqLogo } from "@/shared/components/BondiqLogo"
 
 export function Header() {
   const pathname = usePathname()
@@ -15,15 +16,7 @@ export function Header() {
     <header className="sticky top-0 z-50 flex items-center justify-between h-14 px-4 md:px-5 bg-white border-b-4 border-black">
       {/* Logo */}
       <Link href="/dashboard" className="flex items-center gap-2 no-underline">
-        <div className="w-7 h-7 bg-black flex items-center justify-center">
-          <Heart size={14} color="#FFFFFF" strokeWidth={3} />
-        </div>
-        <span 
-          className="font-extrabold text-lg text-black uppercase tracking-wider"
-          style={{ fontFamily: "var(--font-jakarta, 'Plus Jakarta Sans', sans-serif)" }}
-        >
-          BONDIQ
-        </span>
+        <BondiqLogo size={30} labelColor="#000000" labelSize="18px" />
       </Link>
 
       {/* Weekly Report — mobile only (desktop nav already has it) */}

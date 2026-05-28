@@ -2,6 +2,7 @@ import { Suspense } from "react"
 import Link from "next/link"
 import { SignupForm } from "@/features/auth/components/SignupForm"
 import { LoadingSpinner } from "@/shared/components/LoadingSpinner"
+import { BondiqLogo } from "@/shared/components/BondiqLogo"
 
 export function SignupPage() {
   return (
@@ -10,12 +11,7 @@ export function SignupPage() {
       <div className="flex-1 flex flex-col justify-center items-center p-6 sm:p-8 md:p-12 bg-[#121212] w-full">
         {/* Mobile logo */}
         <Link href="/" className="flex md:hidden" style={{ alignItems: 'center', gap: '10px', marginBottom: '40px', textDecoration: 'none' }}>
-          <div style={{ width: '40px', height: '40px', background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(3deg)', border: '4px solid #FFFFFF', boxShadow: '4px 4px 0px #FFFFFF' }}>
-            <svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="#000000" strokeWidth="2.5">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: '22px', color: '#FFFFFF' }}>BONDIQ</span>
+          <BondiqLogo size={40} labelColor="#FFFFFF" labelSize="22px" />
         </Link>
 
         <div style={{ width: '100%', maxWidth: '400px' }}>
@@ -64,22 +60,7 @@ export function SignupPage() {
 
         {/* Logo */}
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
-          <div style={{
-            width: '44px', height: '44px',
-            background: '#000000',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            transform: 'rotate(3deg)',
-            flexShrink: 0,
-            border: '2px solid #000000',
-            boxShadow: '4px 4px 0px rgba(0,0,0,0.3)',
-          }}>
-            <svg viewBox="0 0 24 24" fill="none" width="22" height="22" stroke="#FFFFFF" strokeWidth="2.5">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: '26px', color: '#000000', letterSpacing: '-0.5px' }}>
-            BONDIQ
-          </span>
+          <BondiqLogo size={44} labelColor="#000000" labelSize="26px" />
         </Link>
 
         {/* Headline */}
