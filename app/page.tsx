@@ -324,7 +324,7 @@ export default function LandingPage() {
                 {[1, 2, 3, 4, 5].map(star => <Star key={star} size={16} fill="#CCFF00" color="#CCFF00" />)}
               </div>
               <p style={{ fontFamily: "var(--font-jakarta, 'Plus Jakarta Sans', sans-serif)", fontSize: '18px', fontWeight: 600, fontStyle: 'italic', margin: 0, paddingRight: '16px' }}>
-                "{review.text}"
+                &ldquo;{review.text}&rdquo;
               </p>
               <span style={{ fontFamily: "var(--font-space-mono, 'Space Mono', monospace)", fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: '#888888' }}>
                 — {review.author}
