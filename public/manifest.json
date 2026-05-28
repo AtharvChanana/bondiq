@@ -1,0 +1,42 @@
+{
+  "name": "BondIQ — Relationship Intelligence",
+  "short_name": "BondIQ",
+  "description": "AI-powered memory for every relationship that matters.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#CCFF00",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "social", "utilities"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Log Interaction",
+      "short_name": "Log",
+      "description": "Quickly log a new interaction",
+      "url": "/log",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "My People",
+      "short_name": "People",
+      "description": "View your relationship network",
+      "url": "/people",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

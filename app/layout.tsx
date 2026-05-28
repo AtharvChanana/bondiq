@@ -28,6 +28,20 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "BondIQ — Relationship Intelligence",
   description: "AI-powered memory for every relationship that matters.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "BondIQ",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    title: "BondIQ — Relationship Intelligence",
+    description: "AI-powered memory for every relationship that matters.",
+  },
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -37,8 +51,30 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       className={`${barlowCondensed.variable} ${spaceMono.variable} ${plusJakarta.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <meta name="theme-color" content="#CCFF00" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="BondIQ" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body style={{ background: '#000000', color: '#FFFFFF', fontFamily: "var(--font-jakarta, 'Plus Jakarta Sans', sans-serif)" }}>
         <Providers>{children}</Providers>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js')
+                    .then(function(reg) { console.log('SW registered:', reg.scope); })
+                    .catch(function(err) { console.log('SW registration failed:', err); });
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   )
