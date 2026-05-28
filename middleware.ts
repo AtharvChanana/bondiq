@@ -13,16 +13,22 @@ export async function middleware(request: NextRequest) {
     const isLoggedIn = request.cookies.get("bondiq_logged_in")?.value === "true"
     const path = request.nextUrl.pathname
 
-    // Log analytics in the background
+    // Log analytics in the background (rate limited to once per hour)
     if (!path.startsWith("/api") && !path.startsWith("/_next") && !path.match(/\.(.*)$/)) {
-      const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "Unknown"
-      const userAgent = request.headers.get("user-agent") ?? "Unknown"
-      const baseUrl = request.nextUrl.origin
-      fetch(`${baseUrl}/api/analytics/track`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path, ip, userAgent, userId: null }),
-      }).catch(console.error)
+      const isTracked = request.cookies.get("bondiq_tracked")?.value === "true"
+      if (!isTracked) {
+        const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "Unknown"
+        const userAgent = request.headers.get("user-agent") ?? "Unknown"
+        const baseUrl = request.nextUrl.origin
+        fetch(`${baseUrl}/api/analytics/track`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ path, ip, userAgent, userId: null }),
+        }).catch(console.error)
+
+        // Set tracking cookie
+        response.cookies.set("bondiq_tracked", "true", { maxAge: 60 * 60 }) // 1 hour
+      }
     }
 
     const isProtected = protectedPrefixes.some((prefix) => path === prefix || path.startsWith(prefix + "/"))
@@ -73,16 +79,22 @@ export async function middleware(request: NextRequest) {
 
   const path = request.nextUrl.pathname
 
-  // Log analytics in the background
+  // Log analytics in the background (rate limited to once per hour)
   if (!path.startsWith("/api") && !path.startsWith("/_next") && !path.match(/\.(.*)$/)) {
-    const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "Unknown"
-    const userAgent = request.headers.get("user-agent") ?? "Unknown"
-    const baseUrl = request.nextUrl.origin
-    fetch(`${baseUrl}/api/analytics/track`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path, ip, userAgent, userId: user?.id ?? null }),
-    }).catch(console.error)
+    const isTracked = request.cookies.get("bondiq_tracked")?.value === "true"
+    if (!isTracked) {
+      const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "Unknown"
+      const userAgent = request.headers.get("user-agent") ?? "Unknown"
+      const baseUrl = request.nextUrl.origin
+      fetch(`${baseUrl}/api/analytics/track`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path, ip, userAgent, userId: user?.id ?? null }),
+      }).catch(console.error)
+
+      // Set tracking cookie
+      response.cookies.set("bondiq_tracked", "true", { maxAge: 60 * 60 }) // 1 hour
+    }
   }
 
   const isProtected = protectedPrefixes.some((prefix) => path === prefix || path.startsWith(prefix + "/"))

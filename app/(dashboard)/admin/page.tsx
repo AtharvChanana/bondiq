@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
-import { format } from "date-fns"
 import { getServerSession } from "@/server/lib/auth"
 import { prisma } from "@/server/lib/prisma"
+import { AdminUserRow } from "./components/AdminUserRow"
 
 export const dynamic = "force-dynamic"
 
@@ -90,22 +90,17 @@ export default async function AdminPage() {
                 <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Name</th>
                 <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Joined</th>
                 <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">People</th>
-                <th className="p-3 uppercase tracking-wider font-bold">Interactions</th>
+                <th className="p-3 border-r-2 border-black uppercase tracking-wider font-bold">Interactions</th>
+                <th className="p-3 uppercase tracking-wider font-bold text-center w-24">Action</th>
               </tr>
             </thead>
             <tbody className="text-black">
               {users.map((user) => (
-                <tr key={user.id} className="border-b-2 border-gray-200 last:border-0 hover:bg-[#CCFF00] transition-colors duration-0">
-                  <td className="p-3 border-r-2 border-black truncate max-w-[200px]">{user.email}</td>
-                  <td className="p-3 border-r-2 border-black truncate max-w-[150px]">{user.name ?? "-"}</td>
-                  <td className="p-3 border-r-2 border-black">{format(new Date(user.createdAt), "MMM d, yyyy")}</td>
-                  <td className="p-3 border-r-2 border-black font-bold">{user._count.people}</td>
-                  <td className="p-3 font-bold">{user._count.interactions}</td>
-                </tr>
+                <AdminUserRow key={user.id} user={user} />
               ))}
               {users.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="p-6 text-center text-gray-500 font-bold uppercase">No users found</td>
+                  <td colSpan={6} className="p-6 text-center text-gray-500 font-bold uppercase">No users found</td>
                 </tr>
               )}
             </tbody>
