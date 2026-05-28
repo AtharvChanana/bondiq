@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 
 import { createSupabaseServerClient } from "@/server/lib/auth"
+import { prisma } from "@/server/lib/prisma"
+import { EmailService } from "@/server/services/email.service"
 
 export async function GET(req: Request) {
   const url = new URL(req.url)
@@ -9,7 +11,18 @@ export async function GET(req: Request) {
 
   if (code) {
     const supabase = createSupabaseServerClient()
-    await supabase.auth.exchangeCodeForSession(code)
+    const { data } = await supabase.auth.exchangeCodeForSession(code)
+    
+    // If we got a user, check if this is their first login
+    if (data?.user?.email) {
+      const existingUser = await prisma.user.findUnique({ where: { id: data.user.id } })
+      
+      if (!existingUser) {
+        // Fire and forget the welcome email
+        const userName = data.user.user_metadata?.name ?? data.user.user_metadata?.full_name ?? "there"
+        EmailService.sendWelcomeEmail(data.user.email, userName).catch(console.error)
+      }
+    }
   }
 
   return NextResponse.redirect(new URL(next, url.origin))

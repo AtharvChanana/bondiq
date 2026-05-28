@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer"
 import { buildNudgeDigestHtml } from "@/server/emails/nudge-digest.html"
 import { buildWeeklyReportHtml } from "@/server/emails/weekly-report.html"
+import { buildWelcomeHtml } from "@/server/emails/welcome.html"
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -137,4 +138,24 @@ export const EmailService = {
       console.error("[EmailService] sendInactivityAlert exception:", err)
     }
   },
+
+  /**
+   * Send the welcome email to new users.
+   */
+  async sendWelcomeEmail(to: string, userName: string): Promise<void> {
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) return
+    const html = buildWelcomeHtml({ userName, appUrl: APP_URL })
+
+    try {
+      await transporter.sendMail({
+        from: FROM,
+        to,
+        subject: "Welcome to BondIQ 🚀",
+        html,
+      })
+      console.log(`[EmailService] Welcome email sent to ${to}`)
+    } catch (err) {
+      console.error("[EmailService] sendWelcomeEmail exception:", err)
+    }
+  }
 }
