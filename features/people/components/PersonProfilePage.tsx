@@ -233,8 +233,8 @@ export function PersonProfilePage({ personId }: { personId: string }) {
 
       {/* Brutalist Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <div style={{ overflowX: 'auto', paddingBottom: '16px' }}>
-          <TabsList style={{ display: 'inline-flex', background: '#111111', border: '4px solid #FFFFFF', padding: '4px', gap: '4px' }}>
+        <div style={{ overflowX: 'auto', paddingBottom: '4px', width: '100%', WebkitOverflowScrolling: 'touch' }} className="hide-scrollbar">
+          <TabsList style={{ display: 'inline-flex', minWidth: 'max-content', background: '#111111', border: '4px solid #FFFFFF', padding: '4px', gap: '4px' }}>
             {['overview', 'timeline', 'goals', 'memories', 'interactions', 'brief', 'chat', 'edit'].map((tab) => {
               const tabLabels: Record<string, string> = {
                 overview: 'OVERVIEW',
@@ -464,8 +464,9 @@ export function PersonProfilePage({ personId }: { personId: string }) {
           {person.interactions.length ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               {person.interactions.map((interaction) => (
-                <div key={interaction.id} style={{ background: '#FFFFFF', border: '4px solid #000000', boxShadow: '8px 8px 0px #333333', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+                <div key={interaction.id} style={{ background: '#FFFFFF', border: '4px solid #000000', boxShadow: '8px 8px 0px #333333', padding: '24px', display: 'flex', flexDirection: 'column', gap: '0' }}>
+                  {/* Header: type badge + date */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                       <span style={{ fontFamily: "var(--font-space-mono, 'Space Mono', monospace)", fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', background: '#000000', color: '#FFFFFF', padding: '4px 8px' }}>
                         {interaction.type.replace("_", " ")}
@@ -480,12 +481,17 @@ export function PersonProfilePage({ personId }: { personId: string }) {
                       {formatDate(interaction.createdAt)}
                     </span>
                   </div>
+                  {/* AI Summary */}
                   {interaction.summary && (
-                    <p style={{ fontFamily: "var(--font-jakarta, 'Plus Jakarta Sans', sans-serif)", fontSize: '16px', fontWeight: 800, color: '#000000', margin: 0 }}>
+                    <p style={{ fontFamily: "var(--font-jakarta, 'Plus Jakarta Sans', sans-serif)", fontSize: '16px', fontWeight: 800, color: '#000000', margin: '0 0 16px 0', lineHeight: 1.4 }}>
                       {interaction.summary}
                     </p>
                   )}
-                  <div style={{ background: '#EEEEEE', border: '2px solid #000000', padding: '16px', fontFamily: "var(--font-jakarta, 'Plus Jakarta Sans', sans-serif)", fontSize: '14px', color: '#333333', whiteSpace: 'pre-line' }}>
+                  {/* Divider before raw content */}
+                  <div style={{ borderTop: '2px dashed #CCCCCC', marginBottom: '16px' }} />
+                  {/* Raw notes block */}
+                  <div style={{ background: '#F7F7F7', border: '2px solid #DDDDDD', borderLeft: '4px solid #AAAAAA', padding: '16px', fontFamily: "var(--font-jakarta, 'Plus Jakarta Sans', sans-serif)", fontSize: '13px', color: '#555555', whiteSpace: 'pre-line', lineHeight: 1.6 }}>
+                    <span style={{ fontFamily: "var(--font-space-mono, 'Space Mono', monospace)", fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', color: '#999999', display: 'block', marginBottom: '8px', letterSpacing: '0.1em' }}>RAW NOTES</span>
                     {interaction.rawContent}
                   </div>
                 </div>
