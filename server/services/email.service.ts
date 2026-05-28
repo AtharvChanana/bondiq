@@ -1,9 +1,16 @@
-import { Resend } from "resend"
+import nodemailer from "nodemailer"
 import { buildNudgeDigestHtml } from "@/server/emails/nudge-digest.html"
 import { buildWeeklyReportHtml } from "@/server/emails/weekly-report.html"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM = process.env.EMAIL_FROM ?? "onboarding@resend.dev"
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD?.replace(/ /g, ""), // Remove spaces if present
+  },
+})
+
+const FROM = process.env.GMAIL_USER ? `"BondIQ" <${process.env.GMAIL_USER}>` : '"BondIQ" <bondiq.admin@gmail.com>'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://bondiq-liard.vercel.app"
 
 export interface NudgeForEmail {
@@ -28,22 +35,21 @@ export const EmailService = {
    */
   async sendNudgeDigest(to: string, userName: string, nudges: NudgeForEmail[]): Promise<void> {
     if (!nudges.length) return
-    if (!process.env.RESEND_API_KEY) {
-      console.warn("[EmailService] RESEND_API_KEY not set — skipping email")
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+      console.warn("[EmailService] GMAIL credentials not set — skipping email")
       return
     }
 
     const html = buildNudgeDigestHtml({ userName, nudges, appUrl: APP_URL })
 
     try {
-      const { error } = await resend.emails.send({
-        from: `BondIQ <${FROM}>`,
+      await transporter.sendMail({
+        from: FROM,
         to,
         subject: `🔔 You have ${nudges.length} relationship nudge${nudges.length !== 1 ? "s" : ""} today`,
         html,
       })
-      if (error) console.error("[EmailService] sendNudgeDigest error:", error)
-      else console.log(`[EmailService] Nudge digest sent to ${to}`)
+      console.log(`[EmailService] Nudge digest sent to ${to}`)
     } catch (err) {
       console.error("[EmailService] sendNudgeDigest exception:", err)
     }
@@ -53,8 +59,8 @@ export const EmailService = {
    * Send the weekly relationship report email every Monday.
    */
   async sendWeeklyReport(to: string, userName: string, digest: WeeklyDigestForEmail): Promise<void> {
-    if (!process.env.RESEND_API_KEY) {
-      console.warn("[EmailService] RESEND_API_KEY not set — skipping email")
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+      console.warn("[EmailService] GMAIL credentials not set — skipping email")
       return
     }
 
@@ -70,14 +76,13 @@ export const EmailService = {
     })
 
     try {
-      const { error } = await resend.emails.send({
-        from: `BondIQ <${FROM}>`,
+      await transporter.sendMail({
+        from: FROM,
         to,
         subject: `📊 Your Weekly Relationship Report — ${digest.weekLabel}`,
         html,
       })
-      if (error) console.error("[EmailService] sendWeeklyReport error:", error)
-      else console.log(`[EmailService] Weekly report sent to ${to}`)
+      console.log(`[EmailService] Weekly report sent to ${to}`)
     } catch (err) {
       console.error("[EmailService] sendWeeklyReport exception:", err)
     }
@@ -91,7 +96,7 @@ export const EmailService = {
     userName: string,
     fadingPeople: { name: string; days: number }[]
   ): Promise<void> {
-    if (!process.env.RESEND_API_KEY) return
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) return
     const greeting = userName ? userName.split(" ")[0] : "there"
     const fadingList = fadingPeople
       .slice(0, 3)
@@ -121,8 +126,8 @@ export const EmailService = {
 </body></html>`
 
     try {
-      await resend.emails.send({
-        from: `BondIQ <${FROM}>`,
+      await transporter.sendMail({
+        from: FROM,
         to,
         subject: `👋 Hey ${greeting}, your relationships miss you`,
         html,
