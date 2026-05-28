@@ -90,12 +90,12 @@ export function LogInteractionPage() {
                 HOW WOULD YOU LIKE TO LOG IT?
               </label>
               <Tabs value={mode} onValueChange={(value: string) => setMode(value as "text_log" | "voice_log")} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <TabsList style={{ display: 'flex', gap: '4px', background: 'transparent', borderBottom: '4px solid #333333' }}>
-                  <TabsTrigger value="text_log" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <TabsList style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', background: 'transparent', borderBottom: '4px solid #333333', width: '100%' }}>
+                  <TabsTrigger value="text_log" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', whiteSpace: 'nowrap' }}>
                     <FileText size={12} />
                     WRITE NOTES
                   </TabsTrigger>
-                  <TabsTrigger value="voice_log" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <TabsTrigger value="voice_log" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', whiteSpace: 'nowrap' }}>
                     <Mic size={12} />
                     VOICE DICTATE
                   </TabsTrigger>

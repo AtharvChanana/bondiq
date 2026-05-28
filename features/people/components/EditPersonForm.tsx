@@ -51,7 +51,7 @@ export function EditPersonForm({ person, onSave }: EditPersonFormProps) {
 
   return (
     <form style={{ display: 'flex', flexDirection: 'column', gap: '32px' }} onSubmit={form.handleSubmit(submit)}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '24px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <label style={{ fontFamily: "var(--font-space-mono, 'Space Mono', monospace)", fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <User size={14} color="#000000" /> FULL NAME
@@ -128,7 +128,7 @@ export function EditPersonForm({ person, onSave }: EditPersonFormProps) {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '24px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <label style={{ fontFamily: "var(--font-space-mono, 'Space Mono', monospace)", fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <MapPin size={14} color="#000000" /> LOCATION
@@ -152,7 +152,7 @@ export function EditPersonForm({ person, onSave }: EditPersonFormProps) {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '24px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <label style={{ fontFamily: "var(--font-space-mono, 'Space Mono', monospace)", fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Info size={14} color="#000000" /> BIRTHDAY
