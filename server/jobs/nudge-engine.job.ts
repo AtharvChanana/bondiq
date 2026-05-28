@@ -3,6 +3,7 @@ import { endOfWeek, startOfWeek } from "date-fns"
 import { prisma } from "@/server/lib/prisma"
 import { NudgesRepository } from "@/server/repositories/nudges.repository"
 import { AIService } from "@/server/services/ai.service"
+import { EmailService } from "@/server/services/email.service"
 import { calculateHealthScore, daysBetween } from "@/shared/constants/health-score"
 
 function isWithinNextDays(date: Date, days: number) {
@@ -172,6 +173,39 @@ export async function generateNudgesForUser(userId: string) {
   }
 
   await generateWeeklyDigest(userId)
+
+  // ── Send nudge digest email ──────────────────────────────────────
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, name: true } })
+    if (user?.email && created.length > 0) {
+      const nudgesForEmail = created
+        .filter((n) => !!n)
+        .map((n) => ({
+          personName: (n as any).person?.name ?? "Someone",
+          reason: (n as any).reason ?? "",
+          draftMessage: (n as any).draftMessage,
+        }))
+      await EmailService.sendNudgeDigest(user.email, user.name ?? "", nudgesForEmail)
+    }
+
+    // Inactivity alert — if user hasn't been seen for 7+ days (proxy: no interactions in 7d)
+    if (user?.email) {
+      const recentInteraction = await prisma.interaction.findFirst({
+        where: { userId, createdAt: { gte: new Date(Date.now() - 7 * 86_400_000) } },
+      })
+      if (!recentInteraction) {
+        const fadingPeople = people
+          .filter((p) => p.lastContactedAt && daysBetween(p.lastContactedAt) > 14)
+          .slice(0, 3)
+          .map((p) => ({ name: p.name, days: daysBetween(p.lastContactedAt ?? p.createdAt) }))
+        await EmailService.sendInactivityAlert(user.email, user.name ?? "", fadingPeople)
+      }
+    }
+  } catch (emailErr) {
+    console.error("[nudge-engine] Email send failed:", emailErr)
+  }
+  // ────────────────────────────────────────────────────────────────
+
   return created
 }
 

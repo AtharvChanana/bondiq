@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/generate-nudges",
       "schedule": "30 2 * * *"
+    },
+    {
+      "path": "/api/cron/weekly-email",
+      "schedule": "0 8 * * 1"
     }
   ]
 }
