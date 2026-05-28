@@ -46,7 +46,7 @@ export default async function AdminPage() {
         acc[key].count++
       }
       return acc
-    }, {} as Record<string, any>)
+    }, {} as Record<string, { id: string; ip: string | null; userAgent: string | null; createdAt: Date; count: number }>)
   ).slice(0, 100) // only show top 100 unique visitors
 
   return (
