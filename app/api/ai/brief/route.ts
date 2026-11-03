@@ -4,6 +4,8 @@ import { getServerSession } from "@/server/lib/auth"
 import { AIService } from "@/server/services/ai.service"
 import { BriefSchema } from "@/server/validators/ai.validator"
 
+export const maxDuration = 30
+
 export async function POST(req: Request) {
   const session = await getServerSession()
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

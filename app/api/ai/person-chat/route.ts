@@ -3,6 +3,8 @@ import { getServerSession } from "@/server/lib/auth"
 import { prisma } from "@/server/lib/prisma"
 import { z } from "zod"
 
+export const maxDuration = 30
+
 const ChatSchema = z.object({
   personId: z.string(),
   message: z.string().min(1),

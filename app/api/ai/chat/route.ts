@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server"
 import { getServerSession } from "@/server/lib/auth"
+
+export const maxDuration = 30
 import { prisma } from "@/server/lib/prisma"
 import { z } from "zod"
 

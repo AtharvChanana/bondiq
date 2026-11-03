@@ -3,6 +3,8 @@ import { getServerSession } from "@/server/lib/auth"
 import { prisma } from "@/server/lib/prisma"
 import { z } from "zod"
 
+export const maxDuration = 30
+
 async function generateText(prompt: string) {
   if (process.env.GROQ_API_KEY) {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
