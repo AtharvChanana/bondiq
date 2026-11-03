@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "@/server/lib/auth"
 import { prisma } from "@/server/lib/prisma"
 import { z } from "zod"
+import { getGroqModel } from "@/server/lib/groq"
 
 export const maxDuration = 30
 
@@ -91,6 +92,7 @@ Guidelines:
 
   // Groq streaming
   if (process.env.GROQ_API_KEY) {
+    const model = await getGroqModel()
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -98,7 +100,7 @@ Guidelines:
         Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: process.env.GROQ_MODEL ?? "llama3-8b-8192",
+        model,
         messages: [{ role: "system", content: systemPrompt }, ...messages],
         temperature: 0.7,
         stream: true,

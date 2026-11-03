@@ -2,27 +2,12 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "@/server/lib/auth"
 import { prisma } from "@/server/lib/prisma"
 import { z } from "zod"
+import { groqGenerateText } from "@/server/lib/groq"
 
 export const maxDuration = 30
 
 async function generateText(prompt: string) {
-  if (process.env.GROQ_API_KEY) {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
-      body: JSON.stringify({
-        model: process.env.GROQ_MODEL ?? "llama3-8b-8192",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.8,
-      }),
-    })
-    if (!response.ok) {
-      const errText = await response.text()
-      throw new Error(`Groq API error (${response.status}): ${errText}`)
-    }
-    const data = await response.json()
-    return data.choices[0].message.content.trim()
-  }
+  if (process.env.GROQ_API_KEY) return groqGenerateText(prompt)
   if (process.env.GEMINI_API_KEY) {
     const { GoogleGenerativeAI } = await import("@google/generative-ai")
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
