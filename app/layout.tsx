@@ -5,7 +5,7 @@ import "./globals.css"
 
 // Headline font: Barlow Condensed — matches the industrial/brutalist aesthetic
 const barlowCondensed = Barlow_Condensed({
-  weight: "900",
+  weight: ["400", "700", "800"],
   subsets: ["latin"],
   variable: "--font-headline",
   display: "swap",
