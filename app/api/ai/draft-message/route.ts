@@ -15,11 +15,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
   }
 
-  const result = await AIService.draftMessage(
-    session.user.id,
-    parsed.data.personId,
-    parsed.data.occasion,
-    parsed.data.reason
-  )
-  return NextResponse.json(result)
+  try {
+    const result = await AIService.draftMessage(
+      session.user.id,
+      parsed.data.personId,
+      parsed.data.occasion,
+      parsed.data.reason
+    )
+    return NextResponse.json(result)
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "AI error"
+    console.error("[/api/ai/draft-message]", message)
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }

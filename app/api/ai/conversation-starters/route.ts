@@ -16,6 +16,10 @@ async function generateText(prompt: string) {
         temperature: 0.8,
       }),
     })
+    if (!response.ok) {
+      const errText = await response.text()
+      throw new Error(`Groq API error (${response.status}): ${errText}`)
+    }
     const data = await response.json()
     return data.choices[0].message.content.trim()
   }
@@ -65,7 +69,15 @@ Context:
 Return ONLY a JSON array of 5 strings. Each should be a specific, natural question or opening line. No numbering, no extra text.
 Example format: ["Question 1?", "Question 2?", "Statement 3.", "Question 4?", "Question 5?"]`
 
-  const raw = await generateText(prompt)
+  let raw: string
+  try {
+    raw = await generateText(prompt)
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "AI error"
+    console.error("[/api/ai/conversation-starters]", message)
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
+
   let starters: string[] = []
   try {
     const match = raw.match(/\[[\s\S]*\]/)

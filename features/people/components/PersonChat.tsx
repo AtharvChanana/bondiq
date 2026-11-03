@@ -66,7 +66,10 @@ export function PersonChat({ personId, personName, personRelationship }: PersonC
         body: JSON.stringify({ personId, message: messageText, history }),
       })
 
-      if (!res.ok) throw new Error("Could not send message")
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }))
+        throw new Error(errData.error ?? `HTTP ${res.status}`)
+      }
 
       const contentType = res.headers.get("content-type") ?? ""
 
@@ -89,8 +92,9 @@ export function PersonChat({ personId, personName, personRelationship }: PersonC
           prev.map((m) => (m.id === assistantId ? { ...m, content: data.reply } : m))
         )
       }
-    } catch {
-      toast.error("Could not get a response")
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Could not get a response"
+      toast.error(msg, { duration: 8000 })
       setMessages((prev) => prev.filter((m) => m.id !== assistantId))
     } finally {
       setLoading(false)

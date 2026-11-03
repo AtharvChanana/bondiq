@@ -16,6 +16,10 @@ async function generateText(prompt: string) {
         temperature: 0.8,
       }),
     })
+    if (!response.ok) {
+      const errText = await response.text()
+      throw new Error(`Groq API error (${response.status}): ${errText}`)
+    }
     const data = await response.json()
     return data.choices[0].message.content.trim()
   }
@@ -57,7 +61,15 @@ Return ONLY a JSON array of 5 objects, each with: { "emoji": string, "title": st
 The reason should reference something specific about them. No extra text outside the JSON.
 Example: [{"emoji":"🎵","title":"Concert tickets","reason":"Since they mentioned loving live music recently"}]`
 
-  const raw = await generateText(prompt)
+  let raw: string
+  try {
+    raw = await generateText(prompt)
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "AI error"
+    console.error("[/api/ai/gift-ideas]", message)
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
+
   let ideas: { emoji: string; title: string; reason: string }[] = []
   try {
     const match = raw.match(/\[[\s\S]*\]/)
