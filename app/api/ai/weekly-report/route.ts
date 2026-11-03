@@ -10,7 +10,7 @@ async function generateText(prompt: string) {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
       body: JSON.stringify({
-        model: process.env.GROQ_MODEL ?? "llama-3.1-8b-instant",
+        model: process.env.GROQ_MODEL ?? "llama3-8b-8192",
         messages: [{ role: "user", content: prompt }],
         temperature: 0.7,
       }),
